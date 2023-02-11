@@ -1,0 +1,187 @@
+{
+	"patcher" : 	{
+		"fileversion" : 1,
+		"appversion" : 		{
+			"major" : 8,
+			"minor" : 5,
+			"revision" : 0,
+			"architecture" : "x64",
+			"modernui" : 1
+		}
+,
+		"classnamespace" : "dsp.gen",
+		"rect" : [ 42.0, 85.0, 1388.0, 953.0 ],
+		"bglocked" : 0,
+		"openinpresentation" : 0,
+		"default_fontsize" : 12.0,
+		"default_fontface" : 0,
+		"default_fontname" : "Arial",
+		"gridonopen" : 1,
+		"gridsize" : [ 15.0, 15.0 ],
+		"gridsnaponopen" : 1,
+		"objectsnaponopen" : 1,
+		"statusbarvisible" : 2,
+		"toolbarvisible" : 1,
+		"lefttoolbarpinned" : 0,
+		"toptoolbarpinned" : 0,
+		"righttoolbarpinned" : 0,
+		"bottomtoolbarpinned" : 0,
+		"toolbars_unpinned_last_save" : 0,
+		"tallnewobj" : 0,
+		"boxanimatetime" : 200,
+		"enablehscroll" : 1,
+		"enablevscroll" : 1,
+		"devicewidth" : 0.0,
+		"description" : "",
+		"digest" : "",
+		"tags" : "",
+		"style" : "",
+		"subpatcher_template" : "",
+		"assistshowspatchername" : 0,
+		"boxes" : [ 			{
+				"box" : 				{
+					"code" : "History lastAtk, lastRel;\r\nHistory slideAtk, slideRel;\r\nHistory lastRatio;\r\nHistory comp;\r\nHistory lastInput;\r\nHistory inputGain;\r\nHistory lastMakeup;\r\nHistory makeupGain;\r\nHistory compFactor;\r\nHistory init(1);\r\nif (init) {\r\n\tadj = samplerate * 0.001;\r\n\tslideAtk = attack * adj;\r\n\tslideRel = release * adj;\r\n\tlastAtk = attack;\r\n\tlastRel = release;\r\n\tcomp = 1 - (1 / ratio); //calculations\r\n\tlastRatio = ratio;\r\n\tinputGain = dbtoa(input); //calculations\r\n\tlastInput = input;\r\n\tmakeupGain = dbtoa(makeup); //calculations\r\n\tlastMakeup = makeup;\r\n\tinit = 0;\r\n\t}\r\n\r\nif ((attack != slideAtk) || (release != slideRel)) {\r\n\tadj = samplerate * 0.001;\r\n\tslideAtk = attack * adj;\r\n\tslideRel = release * adj;\r\n\tlastAtk = attack;\r\n\tlastRel = release;\r\n}\r\n\r\n\r\nif (ratio != lastRatio) {\r\n\tcomp = 1 - (1 / ratio); //calculations\r\n\tlastRatio = ratio;\r\n}\r\n\r\nif (input != lastInput) {\r\n\tinputGain = dbtoa(input); //calculations\r\n\tlastInput = input;\r\n}\r\n\r\nif (makeup != lastMakeup) {\r\n\tmakeupGain = dbtoa(makeup); //calculations\r\n\tlastMakeup = makeup;\r\n}\r\n\r\nadjInput = in1 * inputGain;\r\ninputDB = atodb(abs(adjInput));\r\n\r\nif (inputDB > threshold) {\r\ncompFactor = 1 - (1 - dbtoa((threshold - inputDB) * comp));\r\n} else {\r\ncompFactor = 1;\r\n}\r\nadjFactor = slide(compFactor, slideAtk, slideRel);\r\nout1 = adjInput * adjFactor * makeupGain;\r\nout2 = adjFactor;",
+					"fontface" : 0,
+					"fontname" : "Lucida Console",
+					"fontsize" : 12.0,
+					"id" : "obj-3",
+					"maxclass" : "codebox",
+					"numinlets" : 1,
+					"numoutlets" : 2,
+					"outlettype" : [ "", "" ],
+					"patching_rect" : [ 46.293714761734009, 184.893865466117859, 583.930475473403931, 548.315497994422913 ]
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-37",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 175.0, 37.015072274208066, 307.0, 22.0 ],
+					"text" : "Param @name makeup @min -70 @max 15 @default 0"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-30",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 174.77005672454834, 152.92857038974762, 307.0, 22.0 ],
+					"text" : "Param @name release @min 5 @max 2000 @default 5"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-27",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 175.0, 123.950195860862721, 319.0, 22.0 ],
+					"text" : "Param @name attack @min 0.5 @max 2000 @default 0.5"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-21",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 175.0, 94.971821331977836, 294.0, 22.0 ],
+					"text" : "Param @name ratio @min 0.01 @max 50 @default 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-10",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 175.0, 65.993446803092951, 307.0, 22.0 ],
+					"text" : "Param @name threshold @min -70 @max 6 @default 0"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-8",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 175.0, 8.036697745323181, 291.0, 22.0 ],
+					"text" : "Param @name input @min -70 @max 15 @default 0"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-5",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 611.224190235137939, 789.080215215682983, 35.0, 22.0 ],
+					"text" : "out 2"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-1",
+					"maxclass" : "newobj",
+					"numinlets" : 0,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 46.293714761734009, 14.0, 28.0, 22.0 ],
+					"text" : "in 1"
+				}
+
+			}
+, 			{
+				"box" : 				{
+					"id" : "obj-4",
+					"maxclass" : "newobj",
+					"numinlets" : 1,
+					"numoutlets" : 0,
+					"patching_rect" : [ 46.293714761734009, 781.080215215682983, 35.0, 22.0 ],
+					"text" : "out 1"
+				}
+
+			}
+ ],
+		"lines" : [ 			{
+				"patchline" : 				{
+					"destination" : [ "obj-3", 0 ],
+					"source" : [ "obj-1", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-4", 0 ],
+					"source" : [ "obj-3", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
+					"destination" : [ "obj-5", 0 ],
+					"source" : [ "obj-3", 1 ]
+				}
+
+			}
+ ]
+	}
+
+}
